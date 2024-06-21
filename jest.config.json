@@ -1,0 +1,34 @@
+{
+  "testEnvironment": "node",
+  "moduleNameMapper": {
+    "@/(.*)": "<rootDir>/src/$1",
+    "@tests/(.*)": "<rootDir>/tests/$1",
+    "@tests-int/(.*)": "<rootDir>/tests-int/$1",
+    "@tests-e2e/(.*)": "<rootDir>/tests-e2e/$1"
+  },
+  "modulePathIgnorePatterns": [],
+  "testMatch": ["**/*.test.ts"],
+  "transform": {
+    "\\.ts$": ["ts-jest"]
+  },
+  "preset": "ts-jest",
+  "clearMocks": true,
+  "coverageThreshold": {
+    "global": {
+      "branches": 80,
+      "functions": 80,
+      "lines": 80,
+      "statements": 80
+    }
+  },
+  "roots": [
+    "<rootDir>/tests",
+    "<rootDir>/src",
+    "<rootDir>/tests-int",
+    "<rootDir>/tests-e2e"
+  ],
+  "globalSetup": "<rootDir>/tests/setup/index.ts",
+  "collectCoverageFrom": ["src/**/*.ts"],
+  "coveragePathIgnorePatterns": ["<rootDir>/src/domain/usecases"],
+  "setupFiles": ["./jest.setEnvVars.js"]
+}

@@ -1,0 +1,85 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Coffee {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt        DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt        DateTime? @map("deleted_at") @db.Timestamp(6)
+  name             String
+  roast            String
+  tasteNotes       String    @map("taste_notes")
+  elevation        Int?
+  processingMethod String?   @map("processing_method")
+  generalGrade     Decimal?  @map("general_grade") @db.Decimal(10, 2)
+  internalGrade    Int?      @map("internal_grade")
+  acidity          Int
+  body             Int
+  sweetness        Int?
+  afterTaste       String?   @map("after_taste")
+  category         String
+  brandId          String    @map("brand_id") @db.Uuid
+  brand            Brand     @relation(fields: [brandId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "coffee_brand_id_foreign")
+
+  @@map("coffees")
+}
+
+model Brand {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  legalName   String   @map("legal_name")
+  tradingName String   @map("trading_name")
+  cnpj        String
+  Coffee      Coffee[]
+
+  @@map("brands")
+}
+
+model Review {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  title      String
+  content    String
+  photos     Photo[]
+  likeAmount Int       @map("like_amount")
+  userId     String    @map("author_id") @db.Uuid
+  user       User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_user_id_foreign")
+  Comment    Comment[]
+}
+
+model Comment {
+  id       String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  content  String
+  reviewId String @map("review_id") @db.Uuid
+  Review   Review @relation(fields: [reviewId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_review_id_foreign")
+  userId   String @map("author_id") @db.Uuid
+  user     User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_user_id_foreign")
+}
+
+model Photo {
+  id         String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  url        String
+  relationId String  @map("relation_id") @db.Uuid
+  Review     Review? @relation(fields: [reviewId], references: [id])
+  reviewId   String? @db.Uuid
+}
+
+model User {
+  id       String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email    String    @unique
+  username String
+  password String
+  phone    String?
+  uf       String?
+  city     String?
+  photo    String?
+  Review   Review[]
+  Comment  Comment[]
+
+  @@map("users")
+}

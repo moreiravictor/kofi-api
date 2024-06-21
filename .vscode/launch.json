@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach by Process ID",
+      "processId": "${command:PickProcess}",
+      "request": "attach",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "Unit Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["jest", "${relativeFile}"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Integration Tests",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test:int", "${fileBasenameNoExtension}"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}

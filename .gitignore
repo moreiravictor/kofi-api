@@ -1,0 +1,18 @@
+# package directories
+node_modules
+jspm_packages
+
+# esbuild directories
+.esbuild
+dist
+
+.docker-data
+
+.env*
+!.env.example
+
+coverage
+
+.tool-versions
+
+src

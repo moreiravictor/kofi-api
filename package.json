@@ -1,0 +1,60 @@
+{
+  "name": "kofi-api",
+  "version": "1.0.0",
+  "description": "Kofi monolith",
+  "main": "api.ts",
+  "type": "module",
+  "scripts": {
+    "test:unit": "npx jest --projects jest.config.json --testPathIgnorePatterns=\"tests-int|tests-e2e\"",
+    "test:unitc": "npx jest --projects jest.config.json --testPathIgnorePatterns=\"tests-int|tests-e2e\" --coverage",
+    "build": "npx tsup",
+    "build:watch": "npx tsup --watch",
+    "tsc:check": "npx tsc --noEmit",
+    "tsc:check-watch": "npx tsc --noEmit --watch",
+    "check": "npm run tsc:check && npm run eslint:check",
+    "husky:prepare": "husky install",
+    "husky:setup": "husky add .husky/pre-commit \"npx lint-staged\"",
+    "eslint:fix": "eslint --fix '{src,tests}/**/*.ts'",
+    "eslint:check": "eslint --quiet '{src,tests}/**/*.ts'",
+    "migrate:local": "npx prisma migrate dev",
+    "migrate:deploy": "npx prisma migrate deploy",
+    "migrate:create": "npx prisma migrate dev --create-only",
+    "seed-postgres": "npx tsx -r dotenv/config ./scripts/run-seed.ts"
+  },
+  "prisma": {
+    "seed": "npx tsx scripts/run-seed.ts"
+  },
+  "engines": {
+    "node": "20",
+    "npm": "^9 || ^10"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "brazilian-values": "^0.13.0",
+    "date-fns": "^3.0.0",
+    "fetch-retry": "^6.0.0",
+    "joi": "^17.11.0",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.0.0",
+    "dotenv": "^16.3.1",
+    "husky": "^9.0.0",
+    "jest": "^29.7.0",
+    "jest-mock-extended": "^3.0.5",
+    "jiti": "^1.21.0",
+    "lint-staged": "^15.0.1",
+    "pino-pretty": "^11.0.0",
+    "prisma": "^5.7.0",
+    "ts-jest": "^29.1.1",
+    "tsconfig-paths": "^4.2.0",
+    "tsup": "^8.0.1",
+    "tsx": "^4.7.0",
+    "type-fest": "^4.10.2",
+    "typescript": "^5.3.3"
+  },
+  "author": "Victor Moreira",
+  "license": "Victor Moreira"
+}

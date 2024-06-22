@@ -5,6 +5,7 @@
   "main": "api.ts",
   "type": "module",
   "scripts": {
+    "start": "npx tsx -r dotenv/config ./src/main/web/server.ts",
     "test:unit": "npx jest --projects jest.config.json --testPathIgnorePatterns=\"tests-int|tests-e2e\"",
     "test:unitc": "npx jest --projects jest.config.json --testPathIgnorePatterns=\"tests-int|tests-e2e\" --coverage",
     "build": "npx tsup",
@@ -29,16 +30,22 @@
     "npm": "^9 || ^10"
   },
   "dependencies": {
+    "@koa/bodyparser": "^5.1.1",
     "@prisma/client": "^5.7.0",
     "brazilian-values": "^0.13.0",
     "date-fns": "^3.0.0",
     "fetch-retry": "^6.0.0",
     "joi": "^17.11.0",
+    "koa": "^2.15.3",
+    "koa-body": "^6.0.1",
+    "koa-router": "^12.0.1",
     "pg": "^8.11.3"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.3.1",
     "@types/jest": "^29.5.12",
+    "@types/koa": "^2.15.0",
+    "@types/koa-router": "^7.4.8",
     "@types/node": "^20.0.0",
     "dotenv": "^16.3.1",
     "husky": "^9.0.0",

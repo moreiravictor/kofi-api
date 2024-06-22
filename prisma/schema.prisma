@@ -41,32 +41,45 @@ model Brand {
   @@map("brands")
 }
 
-model Review {
+enum PostType {
+  TIP
+  REVIEW
+}
+
+model Post {
   id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   title      String
   content    String
-  photos     Photo[]
   likeAmount Int       @map("like_amount")
   userId     String    @map("author_id") @db.Uuid
   user       User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_user_id_foreign")
+  type       PostType
+  photos     Photo[]
   Comment    Comment[]
+
+  @@map("posts")
 }
 
 model Comment {
-  id       String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  content  String
-  reviewId String @map("review_id") @db.Uuid
-  Review   Review @relation(fields: [reviewId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_review_id_foreign")
-  userId   String @map("author_id") @db.Uuid
-  user     User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_user_id_foreign")
+  id      String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  content String
+  postId  String @map("review_id") @db.Uuid
+  Post    Post   @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_post_id_foreign")
+  userId  String @map("author_id") @db.Uuid
+  user    User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_user_id_foreign")
+
+  @@map("comments")
 }
 
 model Photo {
   id         String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   url        String
   relationId String  @map("relation_id") @db.Uuid
-  Review     Review? @relation(fields: [reviewId], references: [id])
   reviewId   String? @db.Uuid
+  postId     String  @map("review_id") @db.Uuid
+  Post       Post    @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_post_id_foreign")
+
+  @@map("photos")
 }
 
 model User {
@@ -78,7 +91,7 @@ model User {
   uf       String?
   city     String?
   photo    String?
-  Review   Review[]
+  Post     Post[]
   Comment  Comment[]
 
   @@map("users")

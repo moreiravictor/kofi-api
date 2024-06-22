@@ -1,3 +1,4 @@
+import { Coffee } from "@/domain/models/coffee";
 import { Comment } from "@/domain/models/comment";
 import { Photo } from "@/domain/models/photo";
 import { User } from "@/domain/models/user";
@@ -15,5 +16,6 @@ export interface Post {
   user?: User;
   type: PostType;
   photos:     Photo[];
-  comments: Comment[];
+  comments?: Comment[];
+  coffee?: Coffee;
 }

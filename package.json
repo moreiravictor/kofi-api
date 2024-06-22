@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "npx tsx -r dotenv/config ./src/main/web/server.ts",
-    "test:unit": "npx jest --projects jest.config.json --testPathIgnorePatterns=\"tests-int|tests-e2e\"",
-    "test:unitc": "npx jest --projects jest.config.json --testPathIgnorePatterns=\"tests-int|tests-e2e\" --coverage",
+    "test:unit": "npx jest --projects jest.config.json",
+    "test:unitc": "npx jest --projects jest.config.json --coverage",
     "build": "npx tsup",
     "build:watch": "npx tsup --watch",
     "tsc:check": "npx tsc --noEmit",

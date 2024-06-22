@@ -1,9 +1,9 @@
 import { UserNotFoundError } from "@/application/contracts/errors";
-import { IFindOneUserByUsenameAndPassword } from "@/domain/repositories/user";
+import { IFindOneUserByUsenameAndPasswordRepository } from "@/domain/repositories/user";
 import { ILoginUseCase, ILoginUseCaseInput, ILoginUseCaseOutput } from "@/domain/usecases";
 
 export class LoginUseCase implements ILoginUseCase {
-  constructor(private readonly userRepository: IFindOneUserByUsenameAndPassword) {}
+  constructor(private readonly userRepository: IFindOneUserByUsenameAndPasswordRepository) {}
 
   async execute({ email, password }: ILoginUseCaseInput): Promise<ILoginUseCaseOutput> {
     const user = await this.userRepository.findOne(email, password);

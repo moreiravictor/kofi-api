@@ -1,11 +1,11 @@
 import { PostType } from "@/domain/models/post";
 import { User } from "@/domain/models/user";
-import { IFindOneUserByUsenameAndPassword } from "@/domain/repositories/user";
+import { IFindOneUserByUsenameAndPasswordRepository } from "@/domain/repositories/user";
 import { PrismaClient, type Prisma } from "@prisma/client";
 
 type DBUser = Prisma.UserGetPayload<{include: {Photo: true, Post: { include: { photos: true, Comment: true } }}}>;
 
-export class UserRepository implements IFindOneUserByUsenameAndPassword {
+export class UserRepository implements IFindOneUserByUsenameAndPasswordRepository {
 
   constructor(private readonly db: PrismaClient) {}
 

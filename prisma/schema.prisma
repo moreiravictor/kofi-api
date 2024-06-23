@@ -19,104 +19,196 @@ model Coffee {
   elevation        Int?
   processingMethod String?   @map("processing_method")
   generalGrade     Decimal?  @map("general_grade") @db.Decimal(10, 2)
-  internalGrade    Int?      @map("internal_grade")
+  internalGrade    Int       @map("internal_grade")
   acidity          Int
   body             Int
-  sweetness        Int?
+  sweetness        Int
   afterTaste       String?   @map("after_taste")
   category         String
   brandId          String    @map("brand_id") @db.Uuid
-  brand            Brand     @relation(fields: [brandId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "coffee_brand_id_foreign")
-  photoId          String    @map("photo_id") @db.Uuid
-  Photo            Photo?    @relation(fields: [photoId], references: [id])
+  Brand            Brand     @relation(fields: [brandId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "coffee_brand_id_foreign")
+  profilePhotoId   String    @map("profile_photo_id") @db.Uuid
+  Photo            Photo?    @relation(fields: [profilePhotoId], references: [id])
   Post             Post[]
 
   @@map("coffees")
 }
 
 model Brand {
-  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  legalName   String    @map("legal_name")
-  tradingName String    @map("trading_name")
-  cnpj        String
-  Coffee      Coffee[]
-  photoId     String    @map("photo_id") @db.Uuid
-  Photo       Photo?    @relation(fields: [photoId], references: [id])
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt   DateTime? @map("deleted_at") @db.Timestamp(6)
+  id             String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt      DateTime?       @map("deleted_at") @db.Timestamp(6)
+  legalName      String          @map("legal_name")
+  tradingName    String          @map("trading_name")
+  cnpj           String
+  addressId      String          @db.Uuid
+  address        Address         @relation(fields: [addressId], references: [id])
+  profilePhotoId String          @map("profile_photo_id") @db.Uuid
+  Photo          Photo?          @relation(fields: [profilePhotoId], references: [id])
+  Coffee         Coffee[]
+  Grinder        Grinder[]
+  BrewingMethod  BrewingMethod[]
 
   @@map("brands")
 }
 
 enum PostType {
-  TIP
-  REVIEW
+  tip
+  review
+  comparison
+  recipe
 }
 
 model Post {
-  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  title      String
-  content    String
-  likeAmount Int       @map("like_amount")
-  userId     String    @map("user_id") @db.Uuid
-  user       User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_user_id_foreign")
-  type       PostType
-  photos     Photo[]
-  Comment    Comment[]
-  coffeeId   String?   @map("coffee_id") @db.Uuid
-  Coffe      Coffee?   @relation(fields: [coffeeId], references: [id])
-  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt  DateTime? @map("deleted_at") @db.Timestamp(6)
+  id          String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt   DateTime?       @map("deleted_at") @db.Timestamp(6)
+  title       String
+  content     String
+  likesAmount Int             @map("likes_amount")
+  type        PostType
+  userId      String          @map("user_id") @db.Uuid
+  User        User            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_user_id_foreign")
+  coffeeId    String?         @map("coffee_id") @db.Uuid
+  Coffees     Coffee[]
+  Comments    Comment[]
+  Grinders    Grinder[]
+  Cafeterias  Cafeteria[]
+  Methods     BrewingMethod[]
+  Photos      Photo[]
 
   @@map("posts")
 }
 
+enum GrinderType {
+  hand
+  electric
+}
+
+model Grinder {
+  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt      DateTime?   @map("deleted_at") @db.Timestamp(6)
+  type           GrinderType
+  name           String
+  clicks         Int
+  buildMaterial  String      @map("build_material")
+  weight         Int
+  cutter         String?
+  beanVolume     Int?        @map("bean_volume")
+  size           String?
+  color          String?
+  profilePhotoId String      @db.Uuid
+  Photo          Photo       @relation(fields: [profilePhotoId], references: [id])
+  brandId        String      @db.Uuid
+  Brand          Brand       @relation(fields: [brandId], references: [id])
+  Post           Post[]
+
+  @@map("grinders")
+}
+
+model BrewingMethod {
+  id             String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt      DateTime? @map("deleted_at") @db.Timestamp(6)
+  name           String
+  profilePhotoId String    @db.Uuid
+  Photo          Photo     @relation(fields: [profilePhotoId], references: [id])
+  brandId        String    @db.Uuid
+  Brand          Brand     @relation(fields: [brandId], references: [id])
+  Post           Post[]
+
+  @@map("brewing_methods")
+}
+
+enum CafeteriaType {
+  regular
+  specialty
+}
+
+model Cafeteria {
+  id        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt DateTime?     @map("deleted_at") @db.Timestamp(6)
+  name      String
+  type      CafeteriaType
+  addressId String        @db.Uuid
+  Address   Address       @relation(fields: [addressId], references: [id])
+  Post      Post[]
+
+  @@map("cafeterias")
+}
+
+model Address {
+  id           String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt    DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt    DateTime?   @map("deleted_at") @db.Timestamp(6)
+  streetName   String?     @map("street_name")
+  number       String?
+  zipCode      String?     @map("zip_code")
+  complement   String?
+  city         String
+  neighborhood String?
+  uf           String
+  Cafeteria    Cafeteria[]
+  User         User[]
+  Brand        Brand[]
+
+  @@map("addresses")
+}
+
 model Comment {
   id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
   content   String
   postId    String    @map("post_id") @db.Uuid
   Post      Post      @relation(fields: [postId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_post_id_foreign")
   userId    String    @map("user_id") @db.Uuid
-  user      User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_user_id_foreign")
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
+  User      User      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "comment_user_id_foreign")
 
   @@map("comments")
 }
 
 model Photo {
-  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  url       String
-  Post      Post?     @relation(fields: [postId], references: [id])
-  postId    String?   @db.Uuid
-  User      User[]
-  Coffee    Coffee[]
-  Brand     Brand[]
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
+  id            String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt     DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt     DateTime?       @map("deleted_at") @db.Timestamp(6)
+  url           String
+  postId        String?         @db.Uuid
+  Post          Post?           @relation(fields: [postId], references: [id])
+  Grinder       Grinder[]
+  User          User[]
+  Coffee        Coffee[]
+  Brand         Brand[]
+  BrewingMethod BrewingMethod[]
 
   @@map("photos")
 }
 
 model User {
-  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  email     String    @unique
-  username  String
-  password  String
-  phone     String?
-  uf        String?
-  city      String?
-  Post      Post[]
-  Comment   Comment[]
-  Photo     Photo?    @relation(fields: [photoId], references: [id])
-  photoId   String    @db.Uuid
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
+  id             String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt      DateTime? @map("deleted_at") @db.Timestamp(6)
+  email          String    @unique
+  username       String    @unique
+  password       String
+  phone          String?
+  addressId      String?   @map("address_id") @db.Uuid
+  Address        Address?  @relation(fields: [addressId], references: [id])
+  profilePhotoId String    @map("profile_photo_id") @db.Uuid
+  ProfilePhoto   Photo?    @relation(fields: [profilePhotoId], references: [id])
+  Posts          Post[]
+  Comments       Comment[]
 
   @@map("users")
 }

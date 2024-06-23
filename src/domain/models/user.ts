@@ -1,3 +1,4 @@
+import { Address } from "@/domain/models/address";
 import { Photo } from "@/domain/models/photo";
 import { Post } from "@/domain/models/post";
 
@@ -7,8 +8,7 @@ export interface User {
   username: string;
   password: string;
   phone: string | null;
-  uf: string | null;
-  city: string | null;
-  photo: Photo | null;
+  address: Address | null;
+  profilePhoto: Photo | null;
   posts: Post[];
 }

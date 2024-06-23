@@ -1,32 +1,20 @@
 import db from "@/main/common/postgres/client";
+import { UserRepository } from "@/main/repositories/postgres/user";
 import { faker } from "@faker-js/faker";
 import { randomUUID } from "crypto";
 
-const userPhoto = await db.photo.create({data: {id: randomUUID(), url: faker.internet.url()}});
-const postPhoto = await db.photo.create({data: {id: randomUUID(), url: faker.internet.url()}});
+// const userPhoto = await db.photo.create({data: {id: randomUUID(), url: faker.internet.url()}});
+// const postPhoto = await db.photo.create({data: {id: randomUUID(), url: faker.internet.url()}});
 
-const user = await db.user.create({
-  data: {
-    id: randomUUID(), email: faker.internet.email(),
-    password: faker.internet.password(),
-    username: faker.internet.userName(),
-    city: faker.location.city(),
-    phone: faker.string.numeric(11),
-    photoId: userPhoto.id,
-    uf: "SP"
-  }
-});
+const userRepo = new UserRepository(db);
 
-await db.post.create({
-  data: {
-    content: faker.lorem.paragraphs(5),
-    likeAmount: faker.number.int({min: 10, max: 100}),
-    title: faker.lorem.words(),
-    type: "REVIEW",
-    userId: user.id,
-    id: randomUUID(),
-    photos: {
-      connect: { id: postPhoto.id }
-    }
-  }
+await userRepo.create({
+  address: { city: "São Paulo", id: randomUUID(), uf: "SP", complement: null, neighborhood: null, number: null, streetName: null, zipCode: null},
+  email: faker.internet.email(),
+  id: randomUUID(),
+  password: faker.internet.password(),
+  phone: faker.string.numeric(11),
+  posts: [],
+  profilePhoto: {id: randomUUID(), url: faker.internet.url()},
+  username: faker.internet.userName()
 });

@@ -8,7 +8,7 @@ const userRouter = new Router({prefix: "/users", });
 userRouter.post("/login", async (ctx) => {
   const data = ctx.request.body;
 
-  const response = await makeLoginController().control({ type: "internal", data });
+  const response = await makeLoginController().control(data);
 
   ctx.body = response;
 });
@@ -25,7 +25,7 @@ userRouter.post("/update/:id", async (ctx) => {
   const data = ctx.request.body;
   const userId = ctx.params.id;
 
-  const response = await makeUpdateUserController().control({ id: userId, data });
+  const response = await makeUpdateUserController().control({ id: userId, ...data });
 
   ctx.body = response;
 });

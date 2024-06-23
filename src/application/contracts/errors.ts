@@ -7,6 +7,10 @@ export class KofiError extends Error {
 
 }
 
+export class BadRequestError extends KofiError {
+  statusCode = 400;
+}
+
 export class UserNotFoundError extends KofiError {
   statusCode = 404;
 

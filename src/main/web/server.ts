@@ -1,3 +1,4 @@
+import { errorMiddleware } from "@/main/common/koa/error-middleware";
 import postRoutes from "@/main/web/routes/post";
 import userRoutes from "@/main/web/routes/user";
 import { bodyParser } from "@koa/bodyparser";
@@ -9,7 +10,11 @@ const router = new Router();
 
 router.use(userRoutes, postRoutes);
 
-app.use(bodyParser()).use(router.routes()).use(router.allowedMethods());
+app
+  .use(errorMiddleware)
+  .use(bodyParser())
+  .use(router.routes())
+  .use(router.allowedMethods());
 
 app.listen(process.env.APP_PORT);
 

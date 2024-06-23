@@ -8,7 +8,7 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
   constructor(private readonly userRepository: IUpdateUserByIdRepository & IFindOneUserByIdRepository) {}
 
   async execute(input: IUpdateUserUseCaseInput): Promise<User> {
-    const user = this.userRepository.findOneById(input.id);
+    const user = await this.userRepository.findOneById(input.id);
 
     if (!user) {
       throw new UserNotFoundError();

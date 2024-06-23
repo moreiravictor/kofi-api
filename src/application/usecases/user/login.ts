@@ -6,7 +6,7 @@ export class LoginUseCase implements ILoginUseCase {
   constructor(private readonly userRepository: IFindOneUserByUsenameAndPasswordRepository) {}
 
   async execute({ email, password }: ILoginUseCaseInput): Promise<ILoginUseCaseOutput> {
-    const user = await this.userRepository.findOne(email, password);
+    const user = await this.userRepository.findOneByEmailAndPassword(email, password);
 
     if (!user) {
       throw new UserNotFoundError();

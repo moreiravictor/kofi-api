@@ -1,4 +1,4 @@
 import { Post, PostType } from "@/domain/models/post";
-import { IUsecase } from "@/domain/usecases/usecase";
+import { IUseCase } from "@/domain/usecases/usecase";
 
-export interface IGetLatestPostsUseCase extends IUsecase<PostType, Post[]> {}
+export interface IGetLatestPostsUseCase extends IUseCase<PostType, Post[]> {}

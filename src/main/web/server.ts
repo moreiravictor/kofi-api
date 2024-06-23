@@ -1,5 +1,5 @@
-import loginRoutes from "@/main/web/routes/login";
 import postRoutes from "@/main/web/routes/post";
+import userRoutes from "@/main/web/routes/user";
 import { bodyParser } from "@koa/bodyparser";
 import Koa from "koa";
 import Router from "koa-router";
@@ -7,7 +7,7 @@ import Router from "koa-router";
 const app = new Koa();
 const router = new Router();
 
-router.use(loginRoutes, postRoutes);
+router.use(userRoutes, postRoutes);
 
 app.use(bodyParser()).use(router.routes()).use(router.allowedMethods());
 

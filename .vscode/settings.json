@@ -12,5 +12,7 @@
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "workbench.settings.editor": "json"
 }

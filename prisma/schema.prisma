@@ -122,7 +122,7 @@ model BrewingMethod {
   Photo          Photo     @relation(fields: [profilePhotoId], references: [id])
   brandId        String    @db.Uuid
   Brand          Brand     @relation(fields: [brandId], references: [id])
-  Post           Post[]
+  Posts          Post[]
 
   @@map("brewing_methods")
 }
@@ -141,7 +141,7 @@ model Cafeteria {
   type      CafeteriaType
   addressId String        @db.Uuid
   Address   Address       @relation(fields: [addressId], references: [id])
-  Post      Post[]
+  Posts     Post[]
 
   @@map("cafeterias")
 }

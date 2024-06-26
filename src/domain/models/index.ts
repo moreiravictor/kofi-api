@@ -1,5 +1,7 @@
 export * from "./address";
 export * from "./brand";
+export * from "./brewing-method";
+export * from "./cafeteria";
 export * from "./coffee";
 export * from "./comment";
 export * from "./photo";

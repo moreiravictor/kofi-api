@@ -4,7 +4,7 @@ import { Post } from "@/domain/models/post";
 
 export enum GrinderType {
   HAND = "hand",
-  ELECTRIC = "electric"
+  ELECTRIC = "electric",
 }
 
 export interface Grinder {
@@ -14,11 +14,11 @@ export interface Grinder {
   clicks: number;
   buildMaterial: string;
   weight: number;
-  cutter: string;
-  beanVolume: number;
-  size: string;
-  color: string;
+  cutter: string | null;
+  beanVolume: number | null;
+  size: string | null;
+  color: string | null;
   profilePhoto: Photo;
   brand: Brand;
-  posts: Post[];
+  posts?: Post[];
 }

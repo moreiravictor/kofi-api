@@ -3,7 +3,7 @@ import { Post } from "@/domain/models/post";
 
 export enum CafeteriaType {
   REGULAR = "regular",
-  SPECIALTY = "specialty"
+  SPECIALTY = "specialty",
 }
 
 export interface Cafeteria {
@@ -11,5 +11,5 @@ export interface Cafeteria {
   name: string;
   type: CafeteriaType;
   address: Address;
-  posts: Post[];
+  posts?: Post[];
 }

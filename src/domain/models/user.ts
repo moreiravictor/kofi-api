@@ -1,6 +1,5 @@
 import { Address } from "@/domain/models/address";
 import { Photo } from "@/domain/models/photo";
-import { Post } from "@/domain/models/post";
 
 export interface User {
   id: string;
@@ -10,5 +9,4 @@ export interface User {
   phone: string | null;
   address: Address | null;
   profilePhoto: Photo | null;
-  posts: Post[];
 }

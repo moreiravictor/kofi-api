@@ -7,5 +7,5 @@ export interface BrewingMethod {
   name: string;
   profilePhoto: Photo;
   brand: Brand;
-  posts: Post[];
+  posts?: Post[];
 }

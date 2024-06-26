@@ -63,23 +63,23 @@ enum PostType {
 }
 
 model Post {
-  id          String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt   DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt   DateTime?       @map("deleted_at") @db.Timestamp(6)
-  title       String
-  content     String
-  likesAmount Int             @map("likes_amount")
-  type        PostType
-  userId      String          @map("user_id") @db.Uuid
-  User        User            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_user_id_foreign")
-  coffeeId    String?         @map("coffee_id") @db.Uuid
-  Coffees     Coffee[]
-  Comments    Comment[]
-  Grinders    Grinder[]
-  Cafeterias  Cafeteria[]
-  Methods     BrewingMethod[]
-  Photos      Photo[]
+  id             String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt      DateTime?       @map("deleted_at") @db.Timestamp(6)
+  title          String
+  content        String
+  likesAmount    Int             @map("likes_amount")
+  type           PostType
+  userId         String          @map("user_id") @db.Uuid
+  User           User            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_user_id_foreign")
+  coffeeId       String?         @map("coffee_id") @db.Uuid
+  Coffees        Coffee[]
+  Comments       Comment[]
+  Grinders       Grinder[]
+  Cafeterias     Cafeteria[]
+  BrewingMethods BrewingMethod[]
+  Photos         Photo[]
 
   @@map("posts")
 }

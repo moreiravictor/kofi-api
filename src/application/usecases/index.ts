@@ -1,3 +1,2 @@
-export * from "./get-latest-posts";
+export * from "./post";
 export * from "./user";
-

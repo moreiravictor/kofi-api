@@ -10,43 +10,16 @@ datasource db {
   extensions = [uuidOssp(map: "uuid-ossp", schema: "public")]
 }
 
-model Coffee {
-  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt        DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt        DateTime? @map("deleted_at") @db.Timestamp(6)
-  name             String
-  roast            String
-  tasteNotes       String    @map("taste_notes")
-  elevation        Int?
-  processingMethod String?   @map("processing_method")
-  generalGrade     Decimal?  @map("general_grade") @db.Decimal(10, 2)
-  internalGrade    Int       @map("internal_grade")
-  acidity          Int
-  body             Int
-  sweetness        Int
-  afterTaste       String?   @map("after_taste")
-  category         String
-  brandId          String    @map("brand_id") @db.Uuid
-  Brand            Brand     @relation(fields: [brandId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "coffee_brand_id_foreign")
-  profilePhotoId   String    @map("profile_photo_id") @db.Uuid
-  Photo            Photo?    @relation(fields: [profilePhotoId], references: [id])
-  Post             Post[]
-
-  @@map("coffees")
-}
-
 model Brand {
   id             String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
   deletedAt      DateTime?       @map("deleted_at") @db.Timestamp(6)
-  legalName      String          @map("legal_name")
-  tradingName    String          @map("trading_name")
-  cnpj           String
-  addressId      String          @db.Uuid
-  address        Address         @relation(fields: [addressId], references: [id])
-  profilePhotoId String          @map("profile_photo_id") @db.Uuid
+  name           String          @map("name")
+  cnpj           String?
+  addressId      String?         @map("address_id") @db.Uuid
+  address        Address?        @relation(fields: [addressId], references: [id])
+  profilePhotoId String?         @map("profile_photo_id") @db.Uuid
   Photo          Photo?          @relation(fields: [profilePhotoId], references: [id])
   Coffee         Coffee[]
   Grinder        Grinder[]
@@ -63,25 +36,67 @@ enum PostType {
 }
 
 model Post {
-  id             String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt      DateTime?       @map("deleted_at") @db.Timestamp(6)
-  title          String
-  content        String
-  likesAmount    Int             @map("likes_amount")
-  type           PostType
-  userId         String          @map("user_id") @db.Uuid
-  User           User            @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_user_id_foreign")
-  coffeeId       String?         @map("coffee_id") @db.Uuid
-  Coffees        Coffee[]
-  Comments       Comment[]
-  Grinders       Grinder[]
-  Cafeterias     Cafeteria[]
-  BrewingMethods BrewingMethod[]
-  Photos         Photo[]
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamp(6)
+  title       String
+  content     String
+  likesAmount Int       @map("likes_amount")
+  type        PostType
+  writerId    String    @map("writer_id") @db.Uuid
+  User        User      @relation(fields: [writerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_user_id_foreign")
+  Topics      Topic[]
+  Photos      Photo[]
+  Comment     Comment[]
 
   @@map("posts")
+}
+
+enum TopicType {
+  coffee
+  grinder
+  brewingMethod
+  cafeteria
+}
+
+model Topic {
+  id             String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt      DateTime?      @map("deleted_at") @db.Timestamp(6)
+  name           String
+  profilePhotoId String         @map("profile_photo_id") @db.Uuid
+  Photo          Photo          @relation(fields: [profilePhotoId], references: [id])
+  Post           Post[]
+  type           TopicType
+  Coffee         Coffee?
+  Grinder        Grinder?
+  BrewingMethod  BrewingMethod?
+  Cafeteria      Cafeteria?
+
+  @@map("topic")
+}
+
+model Coffee {
+  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  roast            String
+  tasteNotes       String   @map("taste_notes")
+  elevation        Int?
+  processingMethod String?  @map("processing_method")
+  generalGrade     Decimal? @map("general_grade") @db.Decimal(10, 2)
+  internalGrade    Int      @map("internal_grade")
+  acidity          Int
+  body             Int
+  sweetness        Int
+  afterTaste       String?  @map("after_taste")
+  category         String
+  brandId          String   @map("brand_id") @db.Uuid
+  Brand            Brand    @relation(fields: [brandId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "coffee_brand_id_foreign")
+  topicId          String   @unique @db.Uuid
+  Topic            Topic    @relation(fields: [topicId], references: [id])
+
+  @@map("coffees")
 }
 
 enum GrinderType {
@@ -90,39 +105,29 @@ enum GrinderType {
 }
 
 model Grinder {
-  id             String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt      DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt      DateTime?   @map("deleted_at") @db.Timestamp(6)
-  type           GrinderType
-  name           String
-  clicks         Int
-  buildMaterial  String      @map("build_material")
-  weight         Int
-  cutter         String?
-  beanVolume     Int?        @map("bean_volume")
-  size           String?
-  color          String?
-  profilePhotoId String      @db.Uuid
-  Photo          Photo       @relation(fields: [profilePhotoId], references: [id])
-  brandId        String      @db.Uuid
-  Brand          Brand       @relation(fields: [brandId], references: [id])
-  Post           Post[]
+  id            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  type          GrinderType
+  clicks        Int
+  buildMaterial String      @map("build_material")
+  weight        Int
+  cutter        String?
+  beanVolume    Int?        @map("bean_volume")
+  size          String?
+  color         String?
+  brandId       String      @map("brand_id") @db.Uuid
+  Brand         Brand       @relation(fields: [brandId], references: [id])
+  topicId       String      @unique @map("topic_id") @db.Uuid
+  Topic         Topic       @relation(fields: [topicId], references: [id])
 
   @@map("grinders")
 }
 
 model BrewingMethod {
-  id             String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt      DateTime? @map("deleted_at") @db.Timestamp(6)
-  name           String
-  profilePhotoId String    @db.Uuid
-  Photo          Photo     @relation(fields: [profilePhotoId], references: [id])
-  brandId        String    @db.Uuid
-  Brand          Brand     @relation(fields: [brandId], references: [id])
-  Posts          Post[]
+  id      String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  brandId String @map("brand_id") @db.Uuid
+  Brand   Brand  @relation(fields: [brandId], references: [id])
+  topicId String @unique @map("topic_id") @db.Uuid
+  Topic   Topic  @relation(fields: [topicId], references: [id])
 
   @@map("brewing_methods")
 }
@@ -134,14 +139,11 @@ enum CafeteriaType {
 
 model Cafeteria {
   id        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt DateTime?     @map("deleted_at") @db.Timestamp(6)
-  name      String
   type      CafeteriaType
-  addressId String        @db.Uuid
+  addressId String        @map("address_id") @db.Uuid
   Address   Address       @relation(fields: [addressId], references: [id])
-  Posts     Post[]
+  topicId   String        @unique @map("topic_id") @db.Uuid
+  Topic     Topic         @relation(fields: [topicId], references: [id])
 
   @@map("cafeterias")
 }
@@ -180,18 +182,16 @@ model Comment {
 }
 
 model Photo {
-  id            String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt     DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
-  deletedAt     DateTime?       @map("deleted_at") @db.Timestamp(6)
-  url           String
-  postId        String?         @db.Uuid
-  Post          Post?           @relation(fields: [postId], references: [id])
-  Grinder       Grinder[]
-  User          User[]
-  Coffee        Coffee[]
-  Brand         Brand[]
-  BrewingMethod BrewingMethod[]
+  id        String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamp(6)
+  url       String
+  postId    String?   @map("post_id") @db.Uuid
+  Post      Post?     @relation(fields: [postId], references: [id])
+  User      User[]
+  Brand     Brand[]
+  Topic     Topic[]
 
   @@map("photos")
 }

@@ -5,10 +5,9 @@ export interface IFindManyPostsByTypeRepository {
   findMany(input: PostType): Promise<Post[]>;
 }
 
-export type ICreatePostRepositoryInput = {
-  post: Omit<Post, "user" | "topics"> & { userId: string };
-  topics: { type: TopicType; ids: string[] };
-};
+export type ICreatePostRepositoryInput = Omit<Post, "user" | "topics"> & {
+  userId: string;
+} & { topics: { type: TopicType; ids: string[] } };
 
 export interface ICreatePostRepository {
   create(post: ICreatePostRepositoryInput): Promise<Post>;

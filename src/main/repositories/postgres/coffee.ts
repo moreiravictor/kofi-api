@@ -4,6 +4,7 @@ import {
   IInsertCoffeeRepository,
   IInsertCoffeeRepositoryInput,
 } from "@/domain/repositories/ coffee";
+import { BrandRepository } from "@/main/repositories/postgres/brand";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { randomUUID } from "crypto";
 
@@ -24,7 +25,7 @@ export class CoffeeRepository implements IInsertCoffeeRepository {
       name: dbCoffee.Topic.name,
       topicType: TopicType.COFFEE,
       photo: dbCoffee.Topic.Photo,
-      brand: dbCoffee.Brand,
+      brand: BrandRepository.fromDbToEntity(dbCoffee.Brand),
       acidity: dbCoffee.acidity,
       afterTaste: dbCoffee.afterTaste ?? undefined,
       body: dbCoffee.body,

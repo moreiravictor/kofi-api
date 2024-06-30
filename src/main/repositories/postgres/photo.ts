@@ -1,4 +1,7 @@
 import { Photo } from "@/domain/models/photo";
+import { Prisma } from "@prisma/client";
+
+export type DBPhoto = Prisma.PhotoGetPayload<{}>;
 
 export class PhotoRepository {
   static fromEntityToDBCreate(photo: Photo) {
@@ -20,5 +23,13 @@ export class PhotoRepository {
       updatedAt: new Date(),
       deletedAt: null,
     };
+  }
+
+  static fromDbToEntities(photos: DBPhoto[]): Photo[] {
+    return photos.map(PhotoRepository.fromDbToEntity);
+  }
+
+  static fromDbToEntity(photo: DBPhoto): Photo {
+    return { id: photo.id, url: photo.url };
   }
 }

@@ -5,6 +5,8 @@ import {
   ICreatePostRepositoryInput,
   IFindManyPostsByTypeRepository,
 } from "@/domain/repositories/post";
+import { CommentRepository } from "@/main/repositories/postgres/comment";
+import { PhotoRepository } from "@/main/repositories/postgres/photo";
 import { TopicRepository } from "@/main/repositories/postgres/topic";
 import { UserRepository } from "@/main/repositories/postgres/user";
 import { PostType as DBPostType, Prisma, PrismaClient } from "@prisma/client";
@@ -22,7 +24,9 @@ type DBPost = Prisma.PostGetPayload<{
         Grinder: { include: { Brand: true } };
       };
     };
-    Comments: true;
+    Comments: {
+      include: { User: { include: { ProfilePhoto: true; Address: true } } };
+    };
   };
 }>;
 
@@ -42,14 +46,12 @@ export class PostRepository
       title: dbPost.title,
       type: dbPost.type as PostType,
       likesAmount: dbPost.likesAmount,
-      photos: dbPost.Photos, //TODO: fix this
-      comments: dbPost.Comments, //TODO: fix this
+      photos: PhotoRepository.fromDbToEntities(dbPost.Photos),
+      comments: CommentRepository.fromDbToEntities(dbPost.Comments),
       user: UserRepository.fromDBToEntity(dbPost.User),
       topics: TopicRepository.fromDbToEntities(dbPost.Topics),
     };
   }
-
-  private fromEntityToDbCreate(post: Post) {}
 
   async findMany(type: PostType): Promise<Post[]> {
     const posts = await this.db.post.findMany({
@@ -65,7 +67,9 @@ export class PostRepository
             Grinder: { include: { Brand: true } },
           },
         },
-        Comments: true,
+        Comments: {
+          include: { User: { include: { ProfilePhoto: true, Address: true } } },
+        },
       },
       take: 10,
       where: { type: type as unknown as DBPostType },
@@ -74,7 +78,7 @@ export class PostRepository
     return PostRepository.fromDbToEntitites(posts);
   }
 
-  async create({ post, topics }: ICreatePostRepositoryInput): Promise<Post> {
+  async create(post: ICreatePostRepositoryInput): Promise<Post> {
     const postCreated = await this.db.post.create({
       data: {
         id: post.id,
@@ -87,9 +91,9 @@ export class PostRepository
         type: post.type as unknown as DBPostType,
         User: { connect: { id: post.userId } },
         Topics: {
-          connect: topics.ids.map((id) => ({
+          connect: post.topics.ids.map((id) => ({
             id,
-            type: topics.type as TopicType,
+            type: post.topics.type as TopicType,
           })),
         },
         Photos: { createMany: { data: post.photos } },
@@ -106,7 +110,9 @@ export class PostRepository
             Grinder: { include: { Brand: true } },
           },
         },
-        Comments: true,
+        Comments: {
+          include: { User: { include: { ProfilePhoto: true, Address: true } } },
+        },
       },
     });
 

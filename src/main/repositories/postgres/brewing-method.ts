@@ -1,5 +1,6 @@
 import { BrewingMethod } from "@/domain/models";
 import { TopicType } from "@/domain/models/topic";
+import { BrandRepository } from "@/main/repositories/postgres/brand";
 import { Prisma } from "@prisma/client";
 
 export type DBBrewingMethod = Prisma.BrewingMethodGetPayload<{
@@ -13,7 +14,7 @@ export class BrewingMethodRepository {
   static fromDbToEntity(dbMethod: DBBrewingMethod): BrewingMethod {
     return {
       id: dbMethod.Topic.id,
-      brand: dbMethod.Brand,
+      brand: BrandRepository.fromDbToEntity(dbMethod.Brand),
       name: dbMethod.Topic.name,
       topicType: TopicType.BREWING_METHOD,
       photo: dbMethod.Topic.Photo,

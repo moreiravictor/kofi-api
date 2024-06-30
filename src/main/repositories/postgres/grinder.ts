@@ -1,5 +1,6 @@
 import { Grinder, GrinderType } from "@/domain/models/grinder";
 import { TopicType } from "@/domain/models/topic";
+import { BrandRepository } from "@/main/repositories/postgres/brand";
 import { Prisma } from "@prisma/client";
 
 export type DBGrinder = Prisma.GrinderGetPayload<{
@@ -15,7 +16,7 @@ export class GrinderRepository {
     return {
       id: dbGrinder.id,
       beanVolume: dbGrinder.beanVolume,
-      brand: dbGrinder.Brand,
+      brand: BrandRepository.fromDbToEntity(dbGrinder.Brand),
       buildMaterial: dbGrinder.buildMaterial,
       color: dbGrinder.color,
       clicks: dbGrinder.clicks,

@@ -1,12 +1,19 @@
 import { Coffee } from "@/domain/models";
 import { TopicType } from "@/domain/models/topic";
-import { Prisma } from "@prisma/client";
+import {
+  IInsertCoffeeRepository,
+  IInsertCoffeeRepositoryInput,
+} from "@/domain/repositories/ coffee";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { randomUUID } from "crypto";
 
 type DBCoffee = Prisma.CoffeeGetPayload<{
   include: { Brand: true; Topic: { include: { Photo: true } } };
 }>;
 
-export class CoffeeRepository {
+export class CoffeeRepository implements IInsertCoffeeRepository {
+  constructor(private readonly db: PrismaClient) {}
+
   static fromDbToEntities(dbCoffees: DBCoffee[]): Coffee[] {
     return dbCoffees.map(CoffeeRepository.fromDbToEntity);
   }
@@ -32,5 +39,38 @@ export class CoffeeRepository {
       sweetness: dbCoffee.sweetness,
       tasteNotes: dbCoffee.tasteNotes,
     };
+  }
+
+  async insert(input: IInsertCoffeeRepositoryInput): Promise<Coffee> {
+    const coffeeDb = await this.db.coffee.create({
+      data: {
+        acidity: input.acidity,
+        body: input.body,
+        category: input.category,
+        internalGrade: input.internalGrade,
+        roast: input.roast,
+        sweetness: input.sweetness,
+        tasteNotes: input.tasteNotes,
+        afterTaste: input.afterTaste,
+        elevation: input.elevation,
+        generalGrade: input.generalGrade,
+        id: randomUUID(),
+        processingMethod: input.processingMethod,
+        Brand: { connect: { id: input.brandId } },
+        Topic: {
+          create: {
+            name: input.name,
+            type: input.topicType,
+            id: input.id,
+            updatedAt: new Date(),
+            createdAt: new Date(),
+            Photo: { create: { id: input.photo.id, url: input.photo.url } },
+          },
+        },
+      },
+      include: { Brand: true, Topic: { include: { Photo: true } } },
+    });
+
+    return CoffeeRepository.fromDbToEntity(coffeeDb);
   }
 }

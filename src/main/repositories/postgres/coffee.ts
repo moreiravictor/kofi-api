@@ -1,8 +1,9 @@
 import { Coffee } from "@/domain/models";
+import { TopicType } from "@/domain/models/topic";
 import { Prisma } from "@prisma/client";
 
 type DBCoffee = Prisma.CoffeeGetPayload<{
-  include: { Brand: true; Photo: true };
+  include: { Brand: true; Topic: { include: { Photo: true } } };
 }>;
 
 export class CoffeeRepository {
@@ -12,10 +13,11 @@ export class CoffeeRepository {
 
   static fromDbToEntity(dbCoffee: DBCoffee): Coffee {
     return {
-      id: dbCoffee.id,
-      name: dbCoffee.name,
+      id: dbCoffee.Topic.id,
+      name: dbCoffee.Topic.name,
+      topicType: TopicType.COFFEE,
+      photo: dbCoffee.Topic.Photo,
       brand: dbCoffee.Brand,
-      photo: dbCoffee.Photo ?? undefined,
       acidity: dbCoffee.acidity,
       afterTaste: dbCoffee.afterTaste ?? undefined,
       body: dbCoffee.body,

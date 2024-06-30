@@ -1,8 +1,9 @@
 import { Grinder, GrinderType } from "@/domain/models/grinder";
+import { TopicType } from "@/domain/models/topic";
 import { Prisma } from "@prisma/client";
 
 export type DBGrinder = Prisma.GrinderGetPayload<{
-  include: { Brand: true; Photo: true };
+  include: { Brand: true; Topic: { include: { Photo: true } } };
 }>;
 
 export class GrinderRepository {
@@ -19,8 +20,9 @@ export class GrinderRepository {
       color: dbGrinder.color,
       clicks: dbGrinder.clicks,
       cutter: dbGrinder.cutter,
-      name: dbGrinder.name,
-      profilePhoto: dbGrinder.Photo,
+      name: dbGrinder.Topic.name,
+      topicType: TopicType.GRINDER,
+      photo: dbGrinder.Topic.Photo,
       size: dbGrinder.size,
       type: dbGrinder.type as GrinderType,
       weight: dbGrinder.weight,

@@ -16,7 +16,7 @@ model Brand {
   updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
   deletedAt      DateTime?       @map("deleted_at") @db.Timestamp(6)
   name           String          @map("name")
-  cnpj           String?
+  cnpj           String
   addressId      String?         @map("address_id") @db.Uuid
   address        Address?        @relation(fields: [addressId], references: [id])
   profilePhotoId String?         @map("profile_photo_id") @db.Uuid
@@ -48,7 +48,7 @@ model Post {
   User        User      @relation(fields: [writerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "review_user_id_foreign")
   Topics      Topic[]
   Photos      Photo[]
-  Comment     Comment[]
+  Comments    Comment[]
 
   @@map("posts")
 }

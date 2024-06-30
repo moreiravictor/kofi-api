@@ -1,9 +1,7 @@
 import { Brand } from "@/domain/models/brand";
-import { Photo } from "@/domain/models/photo";
+import { Topic, TopicType } from "@/domain/models/topic";
 
-export interface Coffee {
-  id: string;
-  name: string;
+export interface Coffee extends Topic {
   roast: string;
   tasteNotes: string;
   elevation?: number;
@@ -16,5 +14,5 @@ export interface Coffee {
   afterTaste?: string;
   category: string;
   brand: Brand;
-  photo?: Photo;
+  topicType: TopicType.COFFEE;
 }

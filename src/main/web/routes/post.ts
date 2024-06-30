@@ -19,7 +19,7 @@ postRouter.get("/posts/latest/:type", async (ctx) => {
 
 postRouter.post("/posts", async (ctx) => {
   const request = ctx.request.body;
-  console.log(request);
+
   const response = await makeCreatePostController().control(request);
 
   ctx.body = response;

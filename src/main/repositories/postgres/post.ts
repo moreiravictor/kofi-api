@@ -1,13 +1,11 @@
 import { Post, PostType } from "@/domain/models/post";
+import { TopicType } from "@/domain/models/topic";
 import {
   ICreatePostRepository,
   ICreatePostRepositoryInput,
   IFindManyPostsByTypeRepository,
 } from "@/domain/repositories/post";
-import { BrewingMethodRepository } from "@/main/repositories/postgres/brewing-method";
-import { CafeteriaRepository } from "@/main/repositories/postgres/cafeteria";
-import { CoffeeRepository } from "@/main/repositories/postgres/coffee";
-import { GrinderRepository } from "@/main/repositories/postgres/grinder";
+import { TopicRepository } from "@/main/repositories/postgres/topic";
 import { UserRepository } from "@/main/repositories/postgres/user";
 import { PostType as DBPostType, Prisma, PrismaClient } from "@prisma/client";
 
@@ -15,11 +13,16 @@ type DBPost = Prisma.PostGetPayload<{
   include: {
     Photos: true;
     User: { include: { ProfilePhoto: true; Address: true } };
-    Coffees: { include: { Brand: true; Photo: true } };
-    Cafeterias: { include: { Address: true } };
-    BrewingMethods: { include: { Brand: true; Photo: true } };
+    Topics: {
+      include: {
+        Photo: true;
+        BrewingMethod: { include: { Brand: true } };
+        Cafeteria: { include: { Address: true } };
+        Coffee: { include: { Brand: true } };
+        Grinder: { include: { Brand: true } };
+      };
+    };
     Comments: true;
-    Grinders: { include: { Brand: true; Photo: true } };
   };
 }>;
 
@@ -40,14 +43,9 @@ export class PostRepository
       type: dbPost.type as PostType,
       likesAmount: dbPost.likesAmount,
       photos: dbPost.Photos, //TODO: fix this
-      user: UserRepository.fromDBToEntity(dbPost.User),
-      brewingMethods: BrewingMethodRepository.fromDbToEntities(
-        dbPost.BrewingMethods
-      ),
-      cafeterias: CafeteriaRepository.fromDbToEntities(dbPost.Cafeterias),
-      coffees: CoffeeRepository.fromDbToEntities(dbPost.Coffees),
       comments: dbPost.Comments, //TODO: fix this
-      grinders: GrinderRepository.fromDbToEntities(dbPost.Grinders),
+      user: UserRepository.fromDBToEntity(dbPost.User),
+      topics: TopicRepository.fromDbToEntities(dbPost.Topics),
     };
   }
 
@@ -58,10 +56,15 @@ export class PostRepository
       include: {
         Photos: true,
         User: { include: { Address: true, ProfilePhoto: true } },
-        Coffees: { include: { Brand: true, Photo: true } },
-        Grinders: { include: { Brand: true, Photo: true } },
-        Cafeterias: { include: { Address: true } },
-        BrewingMethods: { include: { Brand: true, Photo: true } },
+        Topics: {
+          include: {
+            Photo: true,
+            BrewingMethod: { include: { Brand: true } },
+            Cafeteria: { include: { Address: true } },
+            Coffee: { include: { Brand: true } },
+            Grinder: { include: { Brand: true } },
+          },
+        },
         Comments: true,
       },
       take: 10,
@@ -83,27 +86,26 @@ export class PostRepository
         deletedAt: null,
         type: post.type as unknown as DBPostType,
         User: { connect: { id: post.userId } },
-        Cafeterias: {
-          connect: topics.cafeteriasIds?.map((id) => ({ id })),
-        },
-        Coffees: {
-          connect: topics.coffeesIds?.map((id) => ({ id })),
-        },
-        Grinders: {
-          connect: topics.grindersIds?.map((id) => ({ id })),
-        },
-        BrewingMethods: {
-          connect: topics.brewingMethodsIds?.map((id) => ({ id })),
+        Topics: {
+          connect: topics.ids.map((id) => ({
+            id,
+            type: topics.type as TopicType,
+          })),
         },
         Photos: { createMany: { data: post.photos } },
       },
       include: {
         Photos: true,
         User: { include: { Address: true, ProfilePhoto: true } },
-        Coffees: { include: { Brand: true, Photo: true } },
-        Grinders: { include: { Brand: true, Photo: true } },
-        Cafeterias: { include: { Address: true } },
-        BrewingMethods: { include: { Brand: true, Photo: true } },
+        Topics: {
+          include: {
+            Photo: true,
+            BrewingMethod: { include: { Brand: true } },
+            Cafeteria: { include: { Address: true } },
+            Coffee: { include: { Brand: true } },
+            Grinder: { include: { Brand: true } },
+          },
+        },
         Comments: true,
       },
     });

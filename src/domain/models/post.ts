@@ -1,9 +1,6 @@
-import { BrewingMethod } from "@/domain/models/brewing-method";
-import { Cafeteria } from "@/domain/models/cafeteria";
-import { Coffee } from "@/domain/models/coffee";
 import { Comment } from "@/domain/models/comment";
-import { Grinder } from "@/domain/models/grinder";
 import { Photo } from "@/domain/models/photo";
+import { PossibleTopic } from "@/domain/models/topic";
 import { User } from "@/domain/models/user";
 
 export enum PostType {
@@ -22,8 +19,5 @@ export interface Post {
   type: PostType;
   photos: Photo[];
   comments?: Comment[];
-  coffees?: Coffee[];
-  grinders?: Grinder[];
-  brewingMethods?: BrewingMethod[];
-  cafeterias?: Cafeteria[];
+  topics: PossibleTopic[];
 }

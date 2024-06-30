@@ -1,15 +1,13 @@
 import { Address } from "@/domain/models/address";
-import { Post } from "@/domain/models/post";
+import { Topic, TopicType } from "@/domain/models/topic";
 
 export enum CafeteriaType {
   REGULAR = "regular",
   SPECIALTY = "specialty",
 }
 
-export interface Cafeteria {
-  id: string;
-  name: string;
+export interface Cafeteria extends Topic {
   type: CafeteriaType;
   address: Address;
-  posts?: Post[];
+  topicType: TopicType.CAFETERIA;
 }

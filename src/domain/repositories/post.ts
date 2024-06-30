@@ -5,21 +5,8 @@ export interface IFindManyPostsByTypeRepository {
 }
 
 export type ICreatePostRepositoryInput = {
-  post: Omit<
-    Post,
-    | "comments"
-    | "coffees"
-    | "grinders"
-    | "brewingMethods"
-    | "cafeterias"
-    | "user"
-  > & { userId: string };
-  topics: {
-    coffeesIds?: string[];
-    grindersIds?: string[];
-    brewingMethodsIds?: string[];
-    cafeteriasIds?: string[];
-  };
+  post: Omit<Post, "user" | "topics"> & { userId: string };
+  topics: { type: string; ids: string[] };
 };
 
 export interface ICreatePostRepository {

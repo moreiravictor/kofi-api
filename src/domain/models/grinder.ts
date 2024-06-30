@@ -1,16 +1,13 @@
 import { Brand } from "@/domain/models/brand";
-import { Photo } from "@/domain/models/photo";
-import { Post } from "@/domain/models/post";
+import { Topic, TopicType } from "@/domain/models/topic";
 
 export enum GrinderType {
   HAND = "hand",
   ELECTRIC = "electric",
 }
 
-export interface Grinder {
-  id: string;
+export interface Grinder extends Topic {
   type: GrinderType;
-  name: string;
   clicks: number;
   buildMaterial: string;
   weight: number;
@@ -18,7 +15,6 @@ export interface Grinder {
   beanVolume: number | null;
   size: string | null;
   color: string | null;
-  profilePhoto: Photo;
   brand: Brand;
-  posts?: Post[];
+  topicType: TopicType.GRINDER;
 }

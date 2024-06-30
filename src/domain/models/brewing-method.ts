@@ -1,11 +1,7 @@
 import { Brand } from "@/domain/models/brand";
-import { Photo } from "@/domain/models/photo";
-import { Post } from "@/domain/models/post";
+import { Topic, TopicType } from "@/domain/models/topic";
 
-export interface BrewingMethod {
-  id: string;
-  name: string;
-  profilePhoto: Photo;
+export interface BrewingMethod extends Topic {
   brand: Brand;
-  posts?: Post[];
+  topicType: TopicType.BREWING_METHOD;
 }

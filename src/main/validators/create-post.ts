@@ -10,12 +10,10 @@ export const createPostValidator = Joi.object({
     .required()
     .valid(...Object.values(PostType)),
   photos: Joi.array()
-    .items(
-      Joi.object({ id: Joi.string().required(), url: Joi.string().required() })
-    )
+    .items(Joi.object({ url: Joi.string().required() }))
     .required(),
-  coffeeIds: Joi.when("type", {
-    is: PostType.REVIEW,
-    then: Joi.array().length(1).items(Joi.string().required()),
-  }),
+  topics: Joi.object({
+    type: Joi.string().required(),
+    ids: Joi.array().required(),
+  }).required(),
 });

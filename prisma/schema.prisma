@@ -21,9 +21,9 @@ model Brand {
   address        Address?        @relation(fields: [addressId], references: [id])
   profilePhotoId String?         @map("profile_photo_id") @db.Uuid
   Photo          Photo?          @relation(fields: [profilePhotoId], references: [id])
-  Coffee         Coffee[]
-  Grinder        Grinder[]
-  BrewingMethod  BrewingMethod[]
+  Coffees        Coffee[]
+  Grinders       Grinder[]
+  BrewingMethods BrewingMethod[]
 
   @@map("brands")
 }

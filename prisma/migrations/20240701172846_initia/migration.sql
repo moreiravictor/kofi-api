@@ -20,7 +20,7 @@ CREATE TABLE "brands" (
     "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP(6),
     "name" TEXT NOT NULL,
-    "cnpj" TEXT,
+    "cnpj" TEXT NOT NULL,
     "address_id" UUID,
     "profile_photo_id" UUID,
 

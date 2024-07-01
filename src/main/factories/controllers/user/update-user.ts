@@ -6,5 +6,8 @@ import { UserRepository } from "@/main/repositories/postgres/user";
 import { updateUserValidator } from "@/main/validators/update-user";
 
 export function makeUpdateUserController() {
-  return new UpdateUserController(new UpdateUserUseCase(new UserRepository(db)), new JoiValidator(updateUserValidator));
+  return new UpdateUserController(
+    new UpdateUserUseCase(new UserRepository(db)),
+    new JoiValidator(updateUserValidator)
+  );
 }

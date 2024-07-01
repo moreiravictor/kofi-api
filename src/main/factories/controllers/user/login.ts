@@ -1,10 +1,11 @@
 import { LoginController } from "@/application/controllers";
-import { LoginUseCase } from "@/application/usecases";
 import { JoiValidator } from "@/main/adapters/joi-validator";
-import db from "@/main/common/postgres/client";
-import { UserRepository } from "@/main/repositories/postgres/user";
+import { makeLoginUseCase } from "@/main/factories/usecases/user/login";
 import { loginValidator } from "@/main/validators";
 
 export function makeLoginController(): LoginController {
-  return new LoginController(new LoginUseCase(new UserRepository(db)), new JoiValidator(loginValidator));
+  return new LoginController(
+    makeLoginUseCase(),
+    new JoiValidator(loginValidator)
+  );
 }

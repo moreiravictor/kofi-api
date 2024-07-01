@@ -1,7 +1,7 @@
 import { User } from "@/domain/models/user";
 
-export interface IFindOneUserByUsenameAndPasswordRepository {
-  findOneByEmailAndPassword(email: string, password: string): Promise<User | null>;
+export interface IFindOneUserByEmailRepository {
+  findOneByEmail(email: string): Promise<User | null>;
 }
 
 export interface IFindOneUserByIdRepository {
@@ -15,4 +15,3 @@ export interface ICreateUserRepository {
 export interface IUpdateUserByIdRepository {
   updateById(id: string, input: Omit<User, "posts">): Promise<User>;
 }
-

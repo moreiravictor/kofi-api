@@ -4,7 +4,6 @@ export class KofiError extends Error {
   constructor(message?: string) {
     super(message ?? "Unknown Kofi Error.");
   }
-
 }
 
 export class BadRequestError extends KofiError {
@@ -16,5 +15,13 @@ export class UserNotFoundError extends KofiError {
 
   constructor() {
     super("User not found");
+  }
+}
+
+export class WrongPasswordError extends KofiError {
+  statusCode = 400;
+
+  constructor() {
+    super("Wrong password");
   }
 }

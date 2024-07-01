@@ -2,8 +2,8 @@ import { UserNotFoundError } from "@/application/contracts/errors";
 import { User } from "@/domain/models/user";
 import {
   ICreateUserRepository,
+  IFindOneUserByEmailRepository,
   IFindOneUserByIdRepository,
-  IFindOneUserByUsenameAndPasswordRepository,
   IUpdateUserByIdRepository,
 } from "@/domain/repositories/user";
 import { AddressRepository } from "@/main/repositories/postgres/address";
@@ -23,7 +23,7 @@ type DBUserUpdate = Prisma.UserUpdateInput;
 
 export class UserRepository
   implements
-    IFindOneUserByUsenameAndPasswordRepository,
+    IFindOneUserByEmailRepository,
     ICreateUserRepository,
     IUpdateUserByIdRepository,
     IFindOneUserByIdRepository
@@ -99,12 +99,9 @@ export class UserRepository
     };
   }
 
-  async findOneByEmailAndPassword(
-    email: string,
-    password: string
-  ): Promise<User | null> {
+  async findOneByEmail(email: string): Promise<User | null> {
     const userDb = await this.db.user.findUnique({
-      where: { email, password },
+      where: { email },
       include: {
         Address: true,
         ProfilePhoto: true,

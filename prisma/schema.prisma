@@ -203,7 +203,7 @@ model User {
   deletedAt      DateTime? @map("deleted_at") @db.Timestamp(6)
   email          String    @unique
   username       String    @unique
-  password       String
+  password       String?
   phone          String?
   addressId      String?   @map("address_id") @db.Uuid
   Address        Address?  @relation(fields: [addressId], references: [id])

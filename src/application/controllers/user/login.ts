@@ -5,6 +5,7 @@ import {
 } from "@/application/contracts/requests/user";
 import { LoginValidator } from "@/application/contracts/validator";
 import { LoginUseCase } from "@/application/usecases";
+import { GoogleSignInUseCase } from "@/application/usecases/user/google-sign-in";
 import { ILoginUseCaseOutput } from "@/domain/usecases";
 
 export class LoginController
@@ -12,31 +13,23 @@ export class LoginController
 {
   constructor(
     private readonly dbLoginUseCase: LoginUseCase,
+    private readonly googleSignInUseCase: GoogleSignInUseCase,
     private readonly validator: LoginValidator
   ) {}
 
   async control(input: LoginRequest) {
-    if (isGoogleSignIn(input)) {
-      console.log(input.idToken);
-      return {
-        id: " ",
-        email: " ",
-        username: " ",
-        password: " ",
-        address: null,
-        phone: null,
-        profilePhoto: null,
-      };
-    } else {
-      try {
-        this.validator.validate(input);
+    try {
+      this.validator.validate(input);
 
-        return await this.dbLoginUseCase.execute(input);
-      } catch (e) {
-        console.log("login error");
-
-        throw e;
+      if (isGoogleSignIn(input)) {
+        return await this.googleSignInUseCase.execute(input.data);
+      } else {
+        return await this.dbLoginUseCase.execute(input.data);
       }
+    } catch (e) {
+      console.log("login error");
+
+      throw e;
     }
   }
 }

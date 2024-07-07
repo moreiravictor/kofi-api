@@ -1,3 +1,4 @@
+import { APP_PORT } from "@/application/contracts/env";
 import { errorMiddleware } from "@/main/common/koa/error-middleware";
 import postRoutes from "@/main/web/routes/post";
 import userRoutes from "@/main/web/routes/user";
@@ -16,8 +17,8 @@ app
   .use(router.routes())
   .use(router.allowedMethods());
 
-app.listen(process.env.APP_PORT);
+app.listen(APP_PORT);
 
-console.log(`app is running on port ${process.env.APP_PORT}`);
+console.log(`app is running on port ${APP_PORT}`);
 
 export default router;

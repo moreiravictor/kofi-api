@@ -18,6 +18,22 @@ export class UserNotFoundError extends KofiError {
   }
 }
 
+export class NoPasswordFoundError extends KofiError {
+  statusCode = 400;
+
+  constructor() {
+    super("No password found for user");
+  }
+}
+
+export class UnauthorizedGoogleSignInError extends KofiError {
+  statusCode = 403;
+
+  constructor() {
+    super("Unauthorized google sign in");
+  }
+}
+
 export class WrongPasswordError extends KofiError {
   statusCode = 400;
 

@@ -1,5 +1,6 @@
 import { PasswordCryptographer } from "@/application/contracts/adapters/password-criptographer";
 import {
+  NoPasswordFoundError,
   UserNotFoundError,
   WrongPasswordError,
 } from "@/application/contracts/errors";
@@ -21,6 +22,10 @@ export class LoginUseCase implements ILoginUseCase {
 
     if (!user) {
       throw new UserNotFoundError();
+    }
+
+    if (!user.password) {
+      throw new NoPasswordFoundError();
     }
 
     if (!PasswordCryptographer.validate(password, user.password)) {

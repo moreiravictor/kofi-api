@@ -4,7 +4,7 @@ import { Photo } from "@/domain/models/photo";
 export interface User {
   id: string;
   email: string;
-  username: string;
+  username: string | null;
   password: string | null; // possibly null for google sign in user
   phone: string | null;
   address: Address | null;

@@ -202,7 +202,7 @@ model User {
   updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
   deletedAt      DateTime? @map("deleted_at") @db.Timestamp(6)
   email          String    @unique
-  username       String    @unique
+  username       String?   @unique
   password       String?
   phone          String?
   addressId      String?   @map("address_id") @db.Uuid

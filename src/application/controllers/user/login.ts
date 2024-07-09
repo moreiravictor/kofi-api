@@ -18,6 +18,8 @@ export class LoginController
   ) {}
 
   async control(input: LoginRequest) {
+    console.log("received a login request", input);
+
     try {
       this.validator.validate(input);
 

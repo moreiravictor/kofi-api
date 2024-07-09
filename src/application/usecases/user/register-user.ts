@@ -17,6 +17,7 @@ export class RegisterUserUseCase implements IRegisterUserUseCase {
       ...input,
       password: PasswordCryptographer.encrypt(input.password),
       id: crypto.randomUUID(),
+      username: null,
       address: null,
       phone: null,
       profilePhoto: null,

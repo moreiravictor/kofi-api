@@ -34,6 +34,8 @@ export class LoginUseCase implements ILoginUseCase {
 
     const { password: _, ...userWithoutPassword } = user;
 
+    console.log("found user:", userWithoutPassword);
+
     return userWithoutPassword;
   }
 }

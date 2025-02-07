@@ -17,17 +17,13 @@ export const createPostValidator = Joi.object({
     switch: [
       {
         is: PostType.REVIEW,
-        then: Joi.array()
-          .items(
-            Joi.object({
-              type: Joi.string()
-                .required()
-                .valid(...Object.values(TopicType))
-                .required(),
-              id: Joi.string().required(),
-            })
-          )
-          .length(1),
+        then: Joi.object({
+          type: Joi.string()
+            .required()
+            .valid(...Object.values(TopicType))
+            .required(),
+          ids: Joi.array().items(Joi.string().required()),
+        }),
       },
       {
         is: [PostType.TIP, PostType.RECIPE],
@@ -41,7 +37,11 @@ export const createPostValidator = Joi.object({
               id: Joi.string().required(),
             })
           )
-          .min(1),
+          .min(1)
+          .messages({
+            "array.base":
+              '"topics" must be an array when type is tip or recipe',
+          }),
       },
       {
         is: PostType.COMPARISON,
@@ -57,17 +57,18 @@ export const createPostValidator = Joi.object({
           )
           .min(2)
           .custom((items, helpers) => {
-            console.log(items);
             const itemsAreSameType = items.every(
               (item: { type: TopicType }) => item.type === items[0].type
             );
-            console.log(itemsAreSameType);
             if (!itemsAreSameType) {
               return helpers.message({
                 custom:
                   "All topics must be of the same type for comparison post",
               });
             }
+          })
+          .messages({
+            "array.base": '"topics" must be an array when type is comparison',
           }),
       },
     ],

@@ -2,30 +2,29 @@ import { TopicType } from "@/domain/models/topic";
 import db from "@/main/common/postgres/client";
 import { CoffeeRepository } from "@/main/repositories/postgres/coffee";
 import { UserRepository } from "@/main/repositories/postgres/user";
-import { faker } from "@faker-js/faker";
 import { randomUUID } from "crypto";
 
 const userRepo = new UserRepository(db);
 
 // create user
-const createdUser = await userRepo.create({
-  address: {
-    city: "São Paulo",
-    id: randomUUID(),
-    uf: "SP",
-    complement: null,
-    neighborhood: null,
-    number: null,
-    streetName: null,
-    zipCode: null,
-  },
-  email: "mock@gmail.com",
-  id: randomUUID(),
-  password: "1234",
-  phone: faker.string.numeric(11),
-  profilePhoto: { id: randomUUID(), url: faker.internet.url() },
-  username: faker.internet.userName(),
-});
+// const createdUser = await userRepo.create({
+//   address: {
+//     city: "São Paulo",
+//     id: randomUUID(),
+//     uf: "SP",
+//     complement: null,
+//     neighborhood: null,
+//     number: null,
+//     streetName: null,
+//     zipCode: null,
+//   },
+//   email: "mock@gmail.com",
+//   id: "b39e33b7-4361-4e48-a8fe-2f32abc8698f",
+//   password: "1234",
+//   phone: faker.string.numeric(11),
+//   profilePhoto: { id: randomUUID(), url: faker.internet.url() },
+//   username: faker.internet.userName(),
+// });
 
 //creates net cafes
 const createdBrand = await db.brand.create({
@@ -64,11 +63,11 @@ const createdCoffee = await coffeeRepo.insert({
   category: "specialty",
   id: randomUUID(),
   internalGrade: 4,
-  name: "abobora com mel",
+  name: "Capim Limão",
   photo: { id: randomUUID(), url: "https://slaaaa" },
   roast: "Média",
   sweetness: 2,
-  tasteNotes: "abóbora, mel, acucar mascavo e amendoas",
+  tasteNotes: "mel, acucar mascavo e capim limão",
   topicType: TopicType.COFFEE,
   afterTaste: "nennum",
   elevation: 1_200,
@@ -76,6 +75,6 @@ const createdCoffee = await coffeeRepo.insert({
   processingMethod: "fermentado",
 });
 
-console.log("user", createdUser.id);
+// console.log("user", createdUser.id);
 console.log("brand", createdBrand.id);
 console.log("coffee", createdCoffee.id);

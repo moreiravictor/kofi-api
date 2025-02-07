@@ -1,4 +1,7 @@
-import { CreatePostRequest } from "@/application/contracts/requests";
+import {
+  CreatePostRequest,
+  GetLatestPostsRequest,
+} from "@/application/contracts/requests";
 import {
   LoginRequest,
   RegisterUserRequest,
@@ -14,3 +17,4 @@ export type UpdateUserValidator = RequestValidator<UpdateUserRequest>;
 export type RegisterUserValidator = RequestValidator<RegisterUserRequest>;
 
 export type CreatePostValidator = RequestValidator<CreatePostRequest>;
+export type GetLatestPostsValidator = RequestValidator<GetLatestPostsRequest>;

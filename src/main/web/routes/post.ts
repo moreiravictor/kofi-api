@@ -5,14 +5,14 @@ import Router from "koa-router";
 
 const postRouter = new Router();
 
-postRouter.get("/posts/latest/:type", async (ctx) => {
-  const type = ctx.params.type;
+postRouter.get("/posts/latest", async (ctx) => {
+  const { page, limit, type } = ctx.query;
 
-  console.log(type);
-
-  const response = await makeGetLatestPostsController().control(
-    type as PostType
-  );
+  const response = await makeGetLatestPostsController().control({
+    limit: limit ? Number(limit) : undefined,
+    page: page ? Number(page) : undefined,
+    type: type ? (type as PostType) : undefined,
+  });
 
   ctx.body = response;
 });

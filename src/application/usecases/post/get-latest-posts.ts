@@ -1,13 +1,22 @@
-import { Post, PostType } from "@/domain/models/post";
+import { buildPaginationParams } from "@/application/builders/pagination";
 import { IFindManyPostsByTypeRepository } from "@/domain/repositories/post";
-import { IGetLatestPostsUseCase } from "@/domain/usecases";
+import {
+  IGetLatestPostsPaginatedUseCase,
+  IGetLatestPostsPaginatedUseCaseInput,
+  IGetLatestPostsPaginatedUseCaseOutput,
+} from "@/domain/usecases";
 
-export class GetLatestPostsUseCase implements IGetLatestPostsUseCase {
-  constructor(private readonly postsRepository: IFindManyPostsByTypeRepository) {}
+export class GetLatestPostsUseCase implements IGetLatestPostsPaginatedUseCase {
+  constructor(
+    private readonly postsRepository: IFindManyPostsByTypeRepository
+  ) {}
 
-  async execute(type: PostType): Promise<Post[]> {
-    return this.postsRepository.findMany(type);
+  async execute(
+    input: IGetLatestPostsPaginatedUseCaseInput
+  ): Promise<IGetLatestPostsPaginatedUseCaseOutput> {
+    return this.postsRepository.findMany(
+      buildPaginationParams(input),
+      input.type
+    );
   }
-
-
 }

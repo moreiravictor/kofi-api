@@ -1,11 +1,29 @@
 import { IController } from "@/application/contracts/controller";
+import { GetLatestPostsRequest } from "@/application/contracts/requests";
+import { GetLatestPostsValidator } from "@/application/contracts/validator";
 import { GetLatestPostsUseCase } from "@/application/usecases";
-import { Post, PostType } from "@/domain/models";
+import {
+  IGetLatestPostsPaginatedUseCaseInput,
+  IGetLatestPostsPaginatedUseCaseOutput,
+} from "@/domain/usecases";
 
-export class GetLatestPostsController implements IController<PostType, Post[]> {
-  constructor(private readonly postsUseCase: GetLatestPostsUseCase) {}
+export class GetLatestPostsController
+  implements
+    IController<
+      IGetLatestPostsPaginatedUseCaseInput,
+      IGetLatestPostsPaginatedUseCaseOutput
+    >
+{
+  constructor(
+    private readonly postsUseCase: GetLatestPostsUseCase,
+    private readonly validator: GetLatestPostsValidator
+  ) {}
 
-  control(type: PostType): Promise<Post[]> {
-    return this.postsUseCase.execute(type);
+  control(
+    input: GetLatestPostsRequest
+  ): Promise<IGetLatestPostsPaginatedUseCaseOutput> {
+    this.validator.validate(input);
+
+    return this.postsUseCase.execute(input);
   }
 }

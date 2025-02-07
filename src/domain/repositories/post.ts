@@ -1,8 +1,12 @@
 import { Post, PostType } from "@/domain/models/post";
 import { TopicType } from "@/domain/models/topic";
+import { IPaginated, IPaginationParams } from "@/domain/usecases/pagination";
 
 export interface IFindManyPostsByTypeRepository {
-  findMany(input: PostType): Promise<Post[]>;
+  findMany(
+    pagination: IPaginationParams,
+    input?: PostType
+  ): Promise<IPaginated<Post>>;
 }
 
 export type ICreatePostRepositoryInput = Omit<Post, "user" | "topics"> & {

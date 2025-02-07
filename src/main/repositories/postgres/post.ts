@@ -5,6 +5,7 @@ import {
   ICreatePostRepositoryInput,
   IFindManyPostsByTypeRepository,
 } from "@/domain/repositories/post";
+import { IPaginated, IPaginationParams } from "@/domain/usecases/pagination";
 import { CommentRepository } from "@/main/repositories/postgres/comment";
 import { PhotoRepository } from "@/main/repositories/postgres/photo";
 import { TopicRepository } from "@/main/repositories/postgres/topic";
@@ -53,32 +54,57 @@ export class PostRepository
     };
   }
 
-  async findMany(type: PostType): Promise<Post[]> {
-    const posts = await this.db.post.findMany({
-      include: {
-        Photos: true,
-        User: { include: { Address: true, ProfilePhoto: true } },
-        Topics: {
-          include: {
-            Photo: true,
-            BrewingMethod: { include: { Brand: true } },
-            Cafeteria: { include: { Address: true } },
-            Coffee: { include: { Brand: true } },
-            Grinder: { include: { Brand: true } },
+  async findMany(
+    pagination: IPaginationParams,
+    type?: PostType
+  ): Promise<IPaginated<Post>> {
+    const { page, limit } = pagination;
+
+    const where = { ...(type && { type: type as unknown as DBPostType }) };
+
+    const [total, posts] = await Promise.all([
+      this.db.post.count({ where }),
+      this.db.post.findMany({
+        include: {
+          Photos: true,
+          User: { include: { Address: true, ProfilePhoto: true } },
+          Topics: {
+            include: {
+              Photo: true,
+              BrewingMethod: { include: { Brand: true } },
+              Cafeteria: { include: { Address: true } },
+              Coffee: { include: { Brand: true } },
+              Grinder: { include: { Brand: true } },
+            },
+          },
+          Comments: {
+            include: {
+              User: { include: { ProfilePhoto: true, Address: true } },
+            },
           },
         },
-        Comments: {
-          include: { User: { include: { ProfilePhoto: true, Address: true } } },
+        skip: (page - 1) * limit,
+        take: limit,
+        where,
+        orderBy: {
+          createdAt: "desc",
         },
-      },
-      take: 10,
-      where: { type: type as unknown as DBPostType },
-    });
+      }),
+    ]);
 
-    return PostRepository.fromDbToEntitites(posts);
+    return {
+      items: PostRepository.fromDbToEntitites(posts),
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        itemsPerPage: limit,
+        totalItems: total,
+      },
+    };
   }
 
   async create(post: ICreatePostRepositoryInput): Promise<Post> {
+    console.log(post);
     const postCreated = await this.db.post.create({
       data: {
         id: post.id,

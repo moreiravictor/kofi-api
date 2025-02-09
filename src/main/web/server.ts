@@ -3,6 +3,7 @@ import { errorMiddleware } from "@/main/common/koa/error-middleware";
 import postRoutes from "@/main/web/routes/post";
 import userRoutes from "@/main/web/routes/user";
 import { bodyParser } from "@koa/bodyparser";
+import cors from "@koa/cors";
 import Koa from "koa";
 import Router from "koa-router";
 
@@ -14,6 +15,7 @@ router.use(userRoutes, postRoutes);
 app
   .use(errorMiddleware)
   .use(bodyParser())
+  .use(cors())
   .use(router.routes())
   .use(router.allowedMethods());
 

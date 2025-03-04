@@ -104,7 +104,6 @@ export class PostRepository
   }
 
   async create(post: ICreatePostRepositoryInput): Promise<Post> {
-    console.log(post);
     const postCreated = await this.db.post.create({
       data: {
         id: post.id,

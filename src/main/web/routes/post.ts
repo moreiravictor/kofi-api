@@ -3,6 +3,7 @@ import { PostType } from "@/domain/models/post";
 import { makeComentOnPostController } from "@/main/factories/controllers/posts/comment-on-post";
 import { makeCreatePostController } from "@/main/factories/controllers/posts/create-post";
 import { makeGetLatestPostsController } from "@/main/factories/controllers/posts/get-latest-posts";
+import { makeGetUserPostsController } from "@/main/factories/controllers/posts/get-user-posts";
 import Router from "koa-router";
 
 const postRouter = new Router();
@@ -23,6 +24,14 @@ postRouter.post("/posts", async (ctx) => {
   const request = ctx.request.body;
 
   const response = await makeCreatePostController().control(request);
+
+  ctx.body = response;
+});
+
+postRouter.post("/posts/:userId", async (ctx) => {
+  const request = ctx.request.body;
+
+  const response = await makeGetUserPostsController().control(request);
 
   ctx.body = response;
 });

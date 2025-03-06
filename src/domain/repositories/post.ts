@@ -9,6 +9,10 @@ export interface IFindManyPostsByTypeRepository {
   ): Promise<IPaginated<Post>>;
 }
 
+export interface IFindManyPostsByUserIdRepository {
+  findManyByUserId(userId: string): Promise<Post[]>;
+}
+
 export type ICreatePostRepositoryInput = Omit<Post, "user" | "topics"> & {
   userId: string;
 } & { topics: { type: TopicType; ids: string[] } };

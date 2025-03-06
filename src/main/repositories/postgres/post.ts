@@ -4,6 +4,7 @@ import {
   ICreatePostRepository,
   ICreatePostRepositoryInput,
   IFindManyPostsByTypeRepository,
+  IFindManyPostsByUserIdRepository,
 } from "@/domain/repositories/post";
 import { IPaginated, IPaginationParams } from "@/domain/usecases/pagination";
 import { CommentRepository } from "@/main/repositories/postgres/comment";
@@ -32,7 +33,10 @@ type DBPost = Prisma.PostGetPayload<{
 }>;
 
 export class PostRepository
-  implements IFindManyPostsByTypeRepository, ICreatePostRepository
+  implements
+    IFindManyPostsByTypeRepository,
+    ICreatePostRepository,
+    IFindManyPostsByUserIdRepository
 {
   constructor(private readonly db: PrismaClient) {}
 
@@ -52,6 +56,35 @@ export class PostRepository
       user: UserRepository.fromDBToEntity(dbPost.User),
       topics: TopicRepository.fromDbToEntities(dbPost.Topics),
     };
+  }
+
+  async findManyByUserId(userId: string): Promise<Post[]> {
+    const posts = await this.db.post.findMany({
+      include: {
+        Photos: true,
+        User: { include: { Address: true, ProfilePhoto: true } },
+        Topics: {
+          include: {
+            Photo: true,
+            BrewingMethod: { include: { Brand: true } },
+            Cafeteria: { include: { Address: true } },
+            Coffee: { include: { Brand: true } },
+            Grinder: { include: { Brand: true } },
+          },
+        },
+        Comments: {
+          include: {
+            User: { include: { ProfilePhoto: true, Address: true } },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      where: { User: { id: userId } },
+    });
+
+    return PostRepository.fromDbToEntitites(posts);
   }
 
   async findMany(

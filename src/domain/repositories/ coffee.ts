@@ -7,3 +7,7 @@ export type IInsertCoffeeRepositoryInput = Omit<Coffee, "brand"> & {
 export interface IInsertCoffeeRepository {
   insert(input: IInsertCoffeeRepositoryInput): Promise<Coffee>;
 }
+
+export interface IFindTopCoffeesRepository {
+  findTop(): Promise<Coffee[]>;
+}

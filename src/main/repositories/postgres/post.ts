@@ -5,6 +5,8 @@ import {
   ICreatePostRepositoryInput,
   IFindManyPostsByTypeRepository,
   IFindManyPostsByUserIdRepository,
+  IFindPostByIdRepository,
+  IFindTopPostsByTypeRepository,
 } from "@/domain/repositories/post";
 import { IPaginated, IPaginationParams } from "@/domain/usecases/pagination";
 import { CommentRepository } from "@/main/repositories/postgres/comment";
@@ -36,7 +38,9 @@ export class PostRepository
   implements
     IFindManyPostsByTypeRepository,
     ICreatePostRepository,
-    IFindManyPostsByUserIdRepository
+    IFindManyPostsByUserIdRepository,
+    IFindPostByIdRepository,
+    IFindTopPostsByTypeRepository
 {
   constructor(private readonly db: PrismaClient) {}
 
@@ -56,6 +60,32 @@ export class PostRepository
       user: UserRepository.fromDBToEntity(dbPost.User),
       topics: TopicRepository.fromDbToEntities(dbPost.Topics),
     };
+  }
+
+  async find(postId: string): Promise<Post | null> {
+    const post = await this.db.post.findUnique({
+      include: {
+        Photos: true,
+        User: { include: { Address: true, ProfilePhoto: true } },
+        Topics: {
+          include: {
+            Photo: true,
+            BrewingMethod: { include: { Brand: true } },
+            Cafeteria: { include: { Address: true } },
+            Coffee: { include: { Brand: true } },
+            Grinder: { include: { Brand: true } },
+          },
+        },
+        Comments: {
+          include: {
+            User: { include: { ProfilePhoto: true, Address: true } },
+          },
+        },
+      },
+      where: { id: postId },
+    });
+
+    return post ? PostRepository.fromDbToEntitity(post) : null;
   }
 
   async findManyByUserId(userId: string): Promise<Post[]> {
@@ -134,6 +164,34 @@ export class PostRepository
         totalItems: total,
       },
     };
+  }
+
+  async findTopByType(input: PostType): Promise<Post[]> {
+    const posts = await this.db.post.findMany({
+      include: {
+        Photos: true,
+        User: { include: { Address: true, ProfilePhoto: true } },
+        Topics: {
+          include: {
+            Photo: true,
+            BrewingMethod: { include: { Brand: true } },
+            Cafeteria: { include: { Address: true } },
+            Coffee: { include: { Brand: true } },
+            Grinder: { include: { Brand: true } },
+          },
+        },
+        Comments: {
+          include: {
+            User: { include: { ProfilePhoto: true, Address: true } },
+          },
+        },
+      },
+      where: { type: input },
+      take: 10,
+      orderBy: { likesAmount: "desc" },
+    });
+
+    return PostRepository.fromDbToEntitites(posts);
   }
 
   async create(post: ICreatePostRepositoryInput): Promise<Post> {

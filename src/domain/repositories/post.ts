@@ -9,8 +9,16 @@ export interface IFindManyPostsByTypeRepository {
   ): Promise<IPaginated<Post>>;
 }
 
+export interface IFindTopPostsByTypeRepository {
+  findTopByType(input: PostType): Promise<Post[]>;
+}
+
 export interface IFindManyPostsByUserIdRepository {
   findManyByUserId(userId: string): Promise<Post[]>;
+}
+
+export interface IFindPostByIdRepository {
+  find(postId: string): Promise<Post | null>;
 }
 
 export type ICreatePostRepositoryInput = Omit<Post, "user" | "topics"> & {

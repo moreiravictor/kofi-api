@@ -2,6 +2,7 @@ import {
   CommentOnPostRequest,
   CreatePostRequest,
   GetLatestPostsRequest,
+  GetPostByIdRequest,
   GetUserPostsRequest,
 } from "@/application/contracts/requests";
 import {
@@ -21,4 +22,5 @@ export type RegisterUserValidator = RequestValidator<RegisterUserRequest>;
 export type CreatePostValidator = RequestValidator<CreatePostRequest>;
 export type CommentOnPostValidator = RequestValidator<CommentOnPostRequest>;
 export type GetLatestPostsValidator = RequestValidator<GetLatestPostsRequest>;
+export type GetPostByIdValidator = RequestValidator<GetPostByIdRequest>;
 export type GetUserPostsValidator = RequestValidator<GetUserPostsRequest>;

@@ -1,6 +1,7 @@
 import { APP_PORT } from "@/application/contracts/env";
 import { errorMiddleware } from "@/main/common/koa/error-middleware";
 import postRoutes from "@/main/web/routes/post";
+import recommendationsRoutes from "@/main/web/routes/recommendations";
 import userRoutes from "@/main/web/routes/user";
 import { bodyParser } from "@koa/bodyparser";
 import cors from "@koa/cors";
@@ -10,7 +11,7 @@ import Router from "koa-router";
 const app = new Koa();
 const router = new Router();
 
-router.use(userRoutes, postRoutes);
+router.use(userRoutes, postRoutes, recommendationsRoutes);
 
 app
   .use(errorMiddleware)

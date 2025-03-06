@@ -18,6 +18,14 @@ export class UserNotFoundError extends KofiError {
   }
 }
 
+export class PostNotFoundError extends KofiError {
+  statusCode = 404;
+
+  constructor() {
+    super("Post not found");
+  }
+}
+
 export class NoPasswordFoundError extends KofiError {
   statusCode = 400;
 

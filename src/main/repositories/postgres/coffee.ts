@@ -1,6 +1,7 @@
 import { Coffee } from "@/domain/models";
 import { TopicType } from "@/domain/models/topic";
 import {
+  IFindTopCoffeesRepository,
   IInsertCoffeeRepository,
   IInsertCoffeeRepositoryInput,
 } from "@/domain/repositories/ coffee";
@@ -12,7 +13,9 @@ type DBCoffee = Prisma.CoffeeGetPayload<{
   include: { Brand: true; Topic: { include: { Photo: true } } };
 }>;
 
-export class CoffeeRepository implements IInsertCoffeeRepository {
+export class CoffeeRepository
+  implements IInsertCoffeeRepository, IFindTopCoffeesRepository
+{
   constructor(private readonly db: PrismaClient) {}
 
   static fromDbToEntities(dbCoffees: DBCoffee[]): Coffee[] {
@@ -40,6 +43,23 @@ export class CoffeeRepository implements IInsertCoffeeRepository {
       sweetness: dbCoffee.sweetness,
       tasteNotes: dbCoffee.tasteNotes,
     };
+  }
+
+  async findTop(): Promise<Coffee[]> {
+    const coffeesDb = await this.db.topic.findMany({
+      take: 10,
+      where: { type: "coffee", Coffee: { isNot: null } },
+      select: {
+        Coffee: {
+          include: { Brand: true, Topic: { include: { Photo: true } } },
+        },
+      },
+      orderBy: { Post: { _count: "desc" } },
+    });
+
+    const coffees = coffeesDb.map((c) => c.Coffee).filter((c) => c !== null);
+
+    return CoffeeRepository.fromDbToEntities(coffees);
   }
 
   async insert(input: IInsertCoffeeRepositoryInput): Promise<Coffee> {

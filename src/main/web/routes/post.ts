@@ -3,6 +3,7 @@ import { PostType } from "@/domain/models/post";
 import { makeComentOnPostController } from "@/main/factories/controllers/posts/comment-on-post";
 import { makeCreatePostController } from "@/main/factories/controllers/posts/create-post";
 import { makeGetLatestPostsController } from "@/main/factories/controllers/posts/get-latest-posts";
+import { makeGetPostByIdController } from "@/main/factories/controllers/posts/get-post-by-id";
 import { makeGetUserPostsController } from "@/main/factories/controllers/posts/get-user-posts";
 import Router from "koa-router";
 
@@ -28,10 +29,18 @@ postRouter.post("/posts", async (ctx) => {
   ctx.body = response;
 });
 
-postRouter.post("/posts/:userId", async (ctx) => {
-  const request = ctx.request.body;
+postRouter.post("/posts/user/:userId", async (ctx) => {
+  const userId = ctx.params.userId;
 
-  const response = await makeGetUserPostsController().control(request);
+  const response = await makeGetUserPostsController().control({ userId });
+
+  ctx.body = response;
+});
+
+postRouter.post("/posts/:postId", async (ctx) => {
+  const postId = ctx.params.postId;
+
+  const response = await makeGetPostByIdController().control({ postId });
 
   ctx.body = response;
 });

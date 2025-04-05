@@ -29,7 +29,7 @@ postRouter.post("/posts", async (ctx) => {
   ctx.body = response;
 });
 
-postRouter.post("/posts/user/:userId", async (ctx) => {
+postRouter.get("/posts/user/:userId", async (ctx) => {
   const userId = ctx.params.userId;
 
   const response = await makeGetUserPostsController().control({ userId });
@@ -37,7 +37,7 @@ postRouter.post("/posts/user/:userId", async (ctx) => {
   ctx.body = response;
 });
 
-postRouter.post("/posts/:postId", async (ctx) => {
+postRouter.get("/posts/:postId", async (ctx) => {
   const postId = ctx.params.postId;
 
   const response = await makeGetPostByIdController().control({ postId });

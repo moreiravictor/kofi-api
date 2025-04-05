@@ -43,7 +43,7 @@ CREATE TABLE "posts" (
 );
 
 -- CreateTable
-CREATE TABLE "topic" (
+CREATE TABLE "topics" (
     "id" UUID NOT NULL DEFAULT uuid_generate_v4(),
     "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -52,7 +52,7 @@ CREATE TABLE "topic" (
     "profile_photo_id" UUID NOT NULL,
     "type" "TopicType" NOT NULL,
 
-    CONSTRAINT "topic_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "topics_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -160,8 +160,8 @@ CREATE TABLE "users" (
     "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP(6),
     "email" TEXT NOT NULL,
-    "username" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "username" TEXT,
+    "password" TEXT,
     "phone" TEXT,
     "address_id" UUID,
     "profile_photo_id" UUID,
@@ -209,31 +209,31 @@ ALTER TABLE "brands" ADD CONSTRAINT "brands_profile_photo_id_fkey" FOREIGN KEY (
 ALTER TABLE "posts" ADD CONSTRAINT "review_user_id_foreign" FOREIGN KEY ("writer_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "topic" ADD CONSTRAINT "topic_profile_photo_id_fkey" FOREIGN KEY ("profile_photo_id") REFERENCES "photos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "topics" ADD CONSTRAINT "topics_profile_photo_id_fkey" FOREIGN KEY ("profile_photo_id") REFERENCES "photos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "coffees" ADD CONSTRAINT "coffee_brand_id_foreign" FOREIGN KEY ("brand_id") REFERENCES "brands"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "coffees" ADD CONSTRAINT "coffees_topicId_fkey" FOREIGN KEY ("topicId") REFERENCES "topic"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "coffees" ADD CONSTRAINT "coffees_topicId_fkey" FOREIGN KEY ("topicId") REFERENCES "topics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "grinders" ADD CONSTRAINT "grinders_brand_id_fkey" FOREIGN KEY ("brand_id") REFERENCES "brands"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "grinders" ADD CONSTRAINT "grinders_topic_id_fkey" FOREIGN KEY ("topic_id") REFERENCES "topic"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "grinders" ADD CONSTRAINT "grinders_topic_id_fkey" FOREIGN KEY ("topic_id") REFERENCES "topics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "brewing_methods" ADD CONSTRAINT "brewing_methods_brand_id_fkey" FOREIGN KEY ("brand_id") REFERENCES "brands"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "brewing_methods" ADD CONSTRAINT "brewing_methods_topic_id_fkey" FOREIGN KEY ("topic_id") REFERENCES "topic"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "brewing_methods" ADD CONSTRAINT "brewing_methods_topic_id_fkey" FOREIGN KEY ("topic_id") REFERENCES "topics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "cafeterias" ADD CONSTRAINT "cafeterias_address_id_fkey" FOREIGN KEY ("address_id") REFERENCES "addresses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "cafeterias" ADD CONSTRAINT "cafeterias_topic_id_fkey" FOREIGN KEY ("topic_id") REFERENCES "topic"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "cafeterias" ADD CONSTRAINT "cafeterias_topic_id_fkey" FOREIGN KEY ("topic_id") REFERENCES "topics"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "comments" ADD CONSTRAINT "comment_post_id_foreign" FOREIGN KEY ("post_id") REFERENCES "posts"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -254,4 +254,4 @@ ALTER TABLE "users" ADD CONSTRAINT "users_profile_photo_id_fkey" FOREIGN KEY ("p
 ALTER TABLE "_PostToTopic" ADD CONSTRAINT "_PostToTopic_A_fkey" FOREIGN KEY ("A") REFERENCES "posts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_PostToTopic" ADD CONSTRAINT "_PostToTopic_B_fkey" FOREIGN KEY ("B") REFERENCES "topic"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_PostToTopic" ADD CONSTRAINT "_PostToTopic_B_fkey" FOREIGN KEY ("B") REFERENCES "topics"("id") ON DELETE CASCADE ON UPDATE CASCADE;

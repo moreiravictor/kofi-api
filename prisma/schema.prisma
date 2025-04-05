@@ -75,7 +75,7 @@ model Topic {
   BrewingMethod  BrewingMethod?
   Cafeteria      Cafeteria?
 
-  @@map("topic")
+  @@map("topics")
 }
 
 model Coffee {

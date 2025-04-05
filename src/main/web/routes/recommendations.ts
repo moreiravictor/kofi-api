@@ -3,7 +3,7 @@ import Router from "koa-router";
 
 const recommendationsRouter = new Router();
 
-recommendationsRouter.post("/recommendations", async (ctx) => {
+recommendationsRouter.get("/recommendations", async (ctx) => {
   const response = await makeGetTopRecommendationsController().control();
 
   ctx.body = response;

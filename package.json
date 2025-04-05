@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "npx tsx -r dotenv/config ./src/main/web/server.ts",
+    "dev": "nodemon --watch src --ext ts --exec 'tsx -r dotenv/config src/main/web/server.ts'",
     "test:unit": "npx jest --projects jest.config.json",
     "test:unitc": "npx jest --projects jest.config.json --coverage",
     "build": "npx tsup",
@@ -57,6 +58,7 @@
     "jest-mock-extended": "^3.0.5",
     "jiti": "^1.21.0",
     "lint-staged": "^15.0.1",
+    "nodemon": "^3.1.9",
     "pino-pretty": "^11.0.0",
     "prisma": "^5.7.0",
     "ts-jest": "^29.1.1",

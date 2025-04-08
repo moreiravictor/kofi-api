@@ -21,9 +21,20 @@ export interface IFindPostByIdRepository {
   find(postId: string): Promise<Post | null>;
 }
 
+export type ICreatePostRepositoryInputTopics = Array<{
+  type: TopicType;
+  id: string;
+}>;
+
+export function isICreatePostRepositoryInputTopics(
+  input: ICreatePostRepositoryInputTopics | { type: TopicType; ids: string[] }
+): input is ICreatePostRepositoryInputTopics {
+  return Array.isArray(input);
+}
+
 export type ICreatePostRepositoryInput = Omit<Post, "user" | "topics"> & {
   userId: string;
-} & { topics: { type: TopicType; ids: string[] } };
+} & { topics: ICreatePostRepositoryInputTopics };
 
 export interface ICreatePostRepository {
   create(post: ICreatePostRepositoryInput): Promise<Post>;

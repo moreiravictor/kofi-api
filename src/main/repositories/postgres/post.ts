@@ -1,5 +1,4 @@
 import { Post, PostType } from "@/domain/models/post";
-import { TopicType } from "@/domain/models/topic";
 import {
   ICreatePostRepository,
   ICreatePostRepositoryInput,
@@ -207,9 +206,9 @@ export class PostRepository
         type: post.type as unknown as DBPostType,
         User: { connect: { id: post.userId } },
         Topics: {
-          connect: post.topics.ids.map((id) => ({
+          connect: post.topics.map(({ id, type }) => ({
             id,
-            type: post.topics.type as TopicType,
+            type: type,
           })),
         },
         Photos: { createMany: { data: post.photos } },
